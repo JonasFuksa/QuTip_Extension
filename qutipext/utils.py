@@ -31,6 +31,18 @@ def n(i, qubits):
     # Use a list comprehension and built-in QuTiP functions
     lst = [get_identity(2) if k != i else qt.basis(2, 1) * qt.basis(2, 1).dag() for k in range(qubits)]
     return qt.tensor(lst)
+def X(i, qubits):
+    # Use a list comprehension and built-in QuTiP functions
+    lst = [get_identity(2) if k != i else qt.sigmax() for k in range(qubits)]
+    return qt.tensor(lst)
+def Y(i, qubits):
+    # Use a list comprehension and built-in QuTiP functions
+    lst = [get_identity(2) if k != i else qt.sigmay() for k in range(qubits)]
+    return qt.tensor(lst)
+def Z(i, qubits):
+    # Use a list comprehension and built-in QuTiP functions
+    lst = [get_identity(2) if k != i else qt.sigmaz() for k in range(qubits)]
+    return qt.tensor(lst)
 
 def bitstring_state(b):
     """

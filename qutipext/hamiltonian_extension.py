@@ -1,4 +1,4 @@
-from .utils import PAULIS, n, bitstring_state
+from .utils import PAULIS, n, bitstring_state, X,Y,Z
 import matplotlib.pyplot as plt
 import numpy as np
 import qutip as qt
@@ -70,3 +70,21 @@ def Interaction(lattice):
         for j in range(i):
             Ham += Vij(lattice.positions[i],lattice.positions[j])*n(i,lattice.positions.shape[0])*n(j,lattice.positions.shape[0])
     return Ham
+
+def Global_Detuning(lattice):
+    """
+    Returns the global detuning term: sum_i n_i
+    """
+    return sum([n(i,lattice.positions.shape[0]) for i in range(lattice.positions.shape[0])])
+
+def Global_X(lattice):
+    """
+    Returns the global X term: sum_i sigma_x_i/2
+    """
+    return sum([X(i,lattice.positions.shape[0]) for i in range(lattice.positions.shape[0])])/2
+
+def Global_Y(lattice):
+    """
+    Returns the global Y term: sum_i sigma_y_i/2
+    """
+    return sum([Y(i,lattice.positions.shape[0]) for i in range(lattice.positions.shape[0])])/2
