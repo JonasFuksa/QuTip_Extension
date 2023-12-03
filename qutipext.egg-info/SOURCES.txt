@@ -1,0 +1,11 @@
+LICENSE
+README.md
+setup.py
+qutipext/__init__.py
+qutipext/hamiltonian_extension.py
+qutipext/utils.py
+qutipext.egg-info/PKG-INFO
+qutipext.egg-info/SOURCES.txt
+qutipext.egg-info/dependency_links.txt
+qutipext.egg-info/requires.txt
+qutipext.egg-info/top_level.txt
