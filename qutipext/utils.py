@@ -44,6 +44,28 @@ def Z(i, qubits):
     lst = [get_identity(2) if k != i else qt.sigmaz() for k in range(qubits)]
     return qt.tensor(lst)
 
+singleZ_cache = {}
+
+def get_singleZ(i,N):
+    """Retrieve or create a cached identity matrix."""
+    if (i,N) not in singleZ_cache:
+        singleZ_cache[(i,N)] = Z(i,N)
+    return singleZ_cache[(i,N)]
+
+singleX_cache = {}
+def get_singleX(i,N):
+    """Retrieve or create a cached identity matrix."""
+    if (i,N) not in singleX_cache:
+        singleX_cache[(i,N)] = X(i,N)
+    return singleX_cache[(i,N)]
+
+singleY_cache = {}
+def get_singleY(i,N):
+    """Retrieve or create a cached identity matrix."""
+    if (i,N) not in singleY_cache:
+        singleY_cache[(i,N)] = Y(i,N)
+    return singleY_cache[(i,N)]
+
 def bitstring_state(b):
     """
     Returns the computational basis state corresponding to the bitstring b.

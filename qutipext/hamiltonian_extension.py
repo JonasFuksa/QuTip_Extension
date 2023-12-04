@@ -5,8 +5,22 @@ import qutip as qt
 
 
 ######## RYDBERG HAMILTONIAN ########
+def generate_random_y(A, sample_size,C = 862690*2*np.pi):
+    # Generate uniformly distributed y values between -A and A
+    y_uniform = np.random.uniform(-A/C, A/C, size = sample_size)
+
+    # We need to transform these y values to get the corresponding x values
+    # Since y = 1/x^6, we solve for x: x = (1/y)^(1/6)
+    # We handle positive and negative y values separately to maintain the sign of x
+    x_transformed = np.sign(y_uniform) * np.abs(1 / y_uniform)**(1/6)
+
+    # Recalculate y to verify the distribution
+    # y_transformed = np.sign(y_uniform)*1 / x_transformed**6
+
+    return x_transformed
+
 class Lattice:
-    def __init__(self, name, dimension, L, unit_vector):
+    def __init__(self, name, dimension, L, unit_vector, random_shift = False, shift_sigma = 0.1):
         """
         Initialize a Lattice object.
         
@@ -20,6 +34,8 @@ class Lattice:
         self.dimension = dimension
         self.L = L
         self.unit_vector = unit_vector
+        self.random_shift = random_shift
+        self.shift_sigma = shift_sigma
         self.positions = self.generate_positions()
 
     def __str__(self):
@@ -27,14 +43,32 @@ class Lattice:
         String representation of the Lattice object.
         """
         return f"Lattice(name={self.name}, dimension={self.dimension}, L={self.L})"
+    def update_positions(self,positions):
+        """
+        Update the positions of the lattice sites.
+        """
+        self.positions = positions
     def generate_positions(self):
         """
         Generate the positions of the lattice sites.
         """
         if self.dimension == 1:
-            return np.arange(self.L)*self.unit_vector[0]
+            if self.random_shift:
+                base = np.array([(x*self.unit_vector[0,:]) for x in range(self.L)])
+                shift = generate_random_y(self.shift_sigma,base.shape)
+                # shift = np.random.uniform(-self.shift_sigma,self.shift_sigma,size = base.shape)
+                return base+shift
+            else:
+                return np.array([(x*self.unit_vector[0,:]) for x in range(self.L)])
+            # return np.arange(self.L)*self.unit_vector[0,:]
         elif self.dimension == 2:
-            return np.array([(x*self.unit_vector[0,:]+y*self.unit_vector[1,:]) for x in range(self.L[0]) for y in range(self.L[1])])
+            if self.random_shift:
+                base = np.array([(x*self.unit_vector[0,:]+y*self.unit_vector[1,:]) for x in range(self.L[0]) for y in range(self.L[1])])
+                shift = generate_random_y(self.shift_sigma,base.shape)
+                # shift = np.random.uniform(-self.shift_sigma,self.shift_sigma,size = base.shape)
+                return base+shift
+            else:
+                return np.array([(x*self.unit_vector[0,:]+y*self.unit_vector[1,:]) for x in range(self.L[0]) for y in range(self.L[1])])
         else:
             raise ValueError("Dimension not supported.")
         
@@ -45,7 +79,10 @@ def plot_positions(lattice):
     Parameters:
     lattice (Lattice object)
     """
-    A = lattice.positions
+    if type(lattice) == Lattice:
+        A = lattice.positions
+    elif type(lattice) == np.ndarray:
+        A = lattice
     x = A[:, 0]
     y = A[:, 1]
 
