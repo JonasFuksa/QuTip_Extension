@@ -71,3 +71,10 @@ def bitstring_state(b):
     Returns the computational basis state corresponding to the bitstring b.
     """
     return qt.tensor([qt.basis(2,int(x)) for x in b])
+
+def PauliString(list_of_pauli):
+    """
+    Returns the PauliString corresponding to the list of Pauli matrices.
+    Input: list of Pauli matrices, i.e. [0,2,3,0]==IYZI
+    """
+    return qt.tensor([PAULIS[x] for x in list_of_pauli])

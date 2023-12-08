@@ -1,4 +1,4 @@
-from .utils import PAULIS, n, bitstring_state, X,Y,Z
+from .utils import PAULIS, n, bitstring_state, X,Y,Z,PauliString
 import matplotlib.pyplot as plt
 import numpy as np
 import qutip as qt
@@ -20,7 +20,7 @@ def generate_random_y(A, sample_size,C = 862690*2*np.pi):
     return x_transformed
 
 class Lattice:
-    def __init__(self, name, dimension, L, unit_vector, random_shift = False, shift_sigma = 0.1):
+    def __init__(self, name, dimension, L, unit_vector, random_shift = False, shift_range = 0.1, rand_type = "uniform"):
         """
         Initialize a Lattice object.
         
@@ -35,7 +35,8 @@ class Lattice:
         self.L = L
         self.unit_vector = unit_vector
         self.random_shift = random_shift
-        self.shift_sigma = shift_sigma
+        self.shift_range = shift_range
+        self.random_type = rand_type
         self.positions = self.generate_positions()
 
     def __str__(self):
@@ -125,3 +126,57 @@ def Global_Y(lattice):
     Returns the global Y term: sum_i sigma_y_i/2
     """
     return sum([Y(i,lattice.positions.shape[0]) for i in range(lattice.positions.shape[0])])/2
+
+# Transverse Ising Model
+def TFIsing(N, J=1.0, h=0.3, dim = 1, periodic = False):
+    """
+    Returns the transverse field Ising model Hamiltonian.
+    H = -J*sum_i sigma_z_i*sigma_z_{i+1} - h*sum_i sigma_x_i
+    """
+    Ham = 0
+    if dim == 1:
+        if periodic:
+            for i in range(N):
+                Ham += -J*Z(i,N)*Z((i+1)%N,N)-h*X(i,N)
+            return Ham
+        else:
+            for i in range(N-1):
+                Ham += -J*Z(i,N)*Z(i+1,N)-h*X(i,N)
+            return Ham -h*X(N-1,N)
+    # elif dim == 2:
+    #     return -J*sum([X(i,4)@X(i+1,4) for i in range(3)])-J*sum([X(i,4)@X(i+2,4) for i in range(2)])-J*sum([X(i,4)@X(i+3,4) for i in range(1)])-h*sum([Z(i,4) for i in range(4)])
+    else:
+        raise ValueError("Dimension not supported.")
+# Heisenberg Model
+
+def Heisenberg(N, Jx, Jy, Jz, hx, hy, hz, dim = 1, periodic = False):
+    """
+    Returns the transverse field Ising model Hamiltonian.
+    H = -J*sum_i sigma_z_i*sigma_z_{i+1} - h*sum_i sigma_x_i
+    """
+    Ham = 0
+    if dim == 1:
+        if periodic:
+            for i in range(N):
+                Ham += -Jx*X(i,N)*X((i+1)%N,N)-Jy*Y(i,N)*Y((i+1)%N,N)-Jz*Z(i,N)*Z((i+1)%N,N)-hx*X(i,N)-hy*Y(i,N)-hz*Z(i,N)
+            return Ham
+        else:
+            for i in range(N-1):
+                Ham += -Jx*X(i,N)*X(i+1,N)-Jy*Y(i,N)*Y(i+1,N)-Jz*Z(i,N)*Z(i+1,N)-hx*X(i,N)-hy*Y(i,N)-hz*Z(i,N)
+            return Ham -hx*X(N-1,N)-hy*Y(N-1,N)-hz*Z(N-1,N)
+    else:
+        raise ValueError("Dimension not supported.")
+def LongRangeHeisenberg(N,Jx,Jy,Jz,hx,hy,hz,alpha=1,dim = 1):
+    """
+    Returns the long range Heisenberg model Hamiltonian.
+    H = -J*sum_i sigma_z_i*sigma_z_{i+1} - h*sum_i sigma_x_i
+    """
+    Ham = 0
+    if dim == 1:
+        for i in range(N):
+            Ham += -hx*X(i,N)-hy*Y(i,N)-hz*Z(i,N)
+            for j in range(i):
+                Ham += -(Jx/(abs(i-j)**alpha))*X(i,N)*X(j,N)-(Jy/(abs(i-j)**alpha))*Y(i,N)*Y(j,N)- (Jz/(abs(i-j)**alpha))*Z(i,N)*Z(j,N)
+        return Ham -hx*X(N-1,N)-hy*Y(N-1,N)-hz*Z(N-1,N)
+    else:
+        raise ValueError("Dimension not supported.")
