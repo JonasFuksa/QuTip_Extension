@@ -1,6 +1,6 @@
-Metadata-Version: 2.4
+Metadata-Version: 2.1
 Name: qutipext
-Version: 0.1
+Version: 0.1.5
 Summary: QuTip Extension Toolbox
 Author: Hong-Ye Hu
 Author-email: hongyehu@fas.harvard.edu
@@ -10,17 +10,6 @@ Classifier: License :: OSI Approved :: BSD License
 Classifier: Programming Language :: Python :: 3
 Description-Content-Type: text/x-rst
 License-File: LICENSE
-Requires-Dist: numpy
-Requires-Dist: qutip
-Dynamic: author
-Dynamic: author-email
-Dynamic: classifier
-Dynamic: description
-Dynamic: description-content-type
-Dynamic: license
-Dynamic: license-file
-Dynamic: requires-dist
-Dynamic: summary
 
 # QuTip_Extension
 This is a QuTip extension including several functions and Hamiltonians

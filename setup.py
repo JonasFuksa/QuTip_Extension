@@ -24,7 +24,7 @@ README = readme(root_path)
 
 config = {
     'name': 'qutipext',
-    'version': '0.1',
+    'version': '0.1.5',
     'packages': find_packages(),
     'description': 'QuTip Extension Toolbox',
     'long_description': README,

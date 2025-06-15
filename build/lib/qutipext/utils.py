@@ -78,3 +78,13 @@ def PauliString(list_of_pauli):
     Input: list of Pauli matrices, i.e. [0,2,3,0]==IYZI
     """
     return qt.tensor([PAULIS[x] for x in list_of_pauli])
+def measure_all_z(state):
+    """
+    Measure all qubits in the Z basis and return the probabilities of each outcome.
+    """
+    N = len(state.dims[0])
+    _, collapose_state = qt.measurement.measure_observable(state, PauliString([3]*N))
+    measure_res = np.zeros(N).astype(int)
+    for i in range(N):
+        measure_res[i] = qt.expect(get_singleZ(i,N), collapose_state)
+    return measure_res, collapose_state
