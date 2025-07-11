@@ -1,0 +1,31 @@
+[project]
+name = "qutipext"
+version = "0.1.5"
+description = "QuTip Extension Toolbox"
+authors = [
+    {name = "Hong-Ye Hu",email = "hongyehu@fas.harvard.edu"}
+]
+license = {text = "Modified BSD"}
+readme = "README.md"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+    "numpy (==1.24)",
+    "matplotlib (==3.10.1)",
+    "qutip (==5.2)",
+    "numba (==0.57)",
+    "jupyter (>=1.1.1,<2.0.0)",
+    "notebook (>=7.4.3,<8.0.0)",
+    "jupyterlab (>=4.4.3,<5.0.0)",
+    "ipykernel (>=6.29.5,<7.0.0)",
+    "jupyterlab-vim (>=4.1.4,<5.0.0)",
+    "tensoresprit @ file:///home/jonas/code/tensoresprit",
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+jupyter = "^1.1.1"
+

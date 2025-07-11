@@ -19,6 +19,7 @@ def generate_random_y(A, sample_size,C = 862690*2*np.pi):
 
     return x_transformed
 
+
 class Lattice:
     def __init__(self, name, dimension, L, unit_vector, random_shift = False, shift_range = 0.1, rand_type = "uniform"):
         """
@@ -44,11 +45,13 @@ class Lattice:
         String representation of the Lattice object.
         """
         return f"Lattice(name={self.name}, dimension={self.dimension}, L={self.L})"
+
     def update_positions(self,positions):
         """
         Update the positions of the lattice sites.
         """
         self.positions = positions
+
     def generate_positions(self):
         """
         Generate the positions of the lattice sites.
@@ -72,7 +75,9 @@ class Lattice:
                 return np.array([(x*self.unit_vector[0,:]+y*self.unit_vector[1,:]) for x in range(self.L[0]) for y in range(self.L[1])])
         else:
             raise ValueError("Dimension not supported.")
-        
+        return
+
+
 def plot_positions(lattice):
     """
     Plot balls given their coordinates in a 2D numpy array.
@@ -94,11 +99,14 @@ def plot_positions(lattice):
     plt.grid(True)
     plt.show()
 
+
 def Vij(r1,r2,C = 862690*2*np.pi):
     """
     Returns the interaction strength between two atoms separated by a distance r1-r2.
     """
     return C/(np.linalg.norm(r1-r2)**6)
+
+
 def Interaction(lattice):
     """
     Returns the interaction matrix for a given lattice.
@@ -109,23 +117,38 @@ def Interaction(lattice):
             Ham += Vij(lattice.positions[i],lattice.positions[j])*n(i,lattice.positions.shape[0])*n(j,lattice.positions.shape[0])
     return Ham
 
+
 def Global_Detuning(lattice):
     """
     Returns the global detuning term: sum_i n_i
     """
-    return sum([n(i,lattice.positions.shape[0]) for i in range(lattice.positions.shape[0])])
+    return sum([n(i, lattice.positions.shape[0])
+                for i in range(lattice.positions.shape[0])])
+
+
+def Local_Detuning(lattice, mu):
+    """
+    Returns the local detuning term: sum_i mu_i n_i
+    """
+    assert len(mu) == lattice.positions.shape[0]
+    return sum([mu[i] * n(i, lattice.positions.shape[0])
+                for i in range(lattice.positions.shape[0])])
+
 
 def Global_X(lattice):
     """
     Returns the global X term: sum_i sigma_x_i/2
     """
-    return sum([X(i,lattice.positions.shape[0]) for i in range(lattice.positions.shape[0])])/2
+    return sum([X(i, lattice.positions.shape[0])
+                for i in range(lattice.positions.shape[0])])/2
+
 
 def Global_Y(lattice):
     """
     Returns the global Y term: sum_i sigma_y_i/2
     """
     return sum([Y(i,lattice.positions.shape[0]) for i in range(lattice.positions.shape[0])])/2
+
 
 # Transverse Ising Model
 def TFIsing(N, J=1.0, h=0.3, dim = 1, periodic = False):
@@ -149,6 +172,7 @@ def TFIsing(N, J=1.0, h=0.3, dim = 1, periodic = False):
         raise ValueError("Dimension not supported.")
 # Heisenberg Model
 
+
 def Heisenberg(N, Jx, Jy, Jz, hx, hy, hz, dim = 1, periodic = False):
     """
     Returns the transverse field Ising model Hamiltonian.
@@ -166,6 +190,8 @@ def Heisenberg(N, Jx, Jy, Jz, hx, hy, hz, dim = 1, periodic = False):
             return Ham -hx*X(N-1,N)-hy*Y(N-1,N)-hz*Z(N-1,N)
     else:
         raise ValueError("Dimension not supported.")
+
+
 def LongRangeHeisenberg(N,Jx,Jy,Jz,hx,hy,hz,alpha=1,dim = 1):
     """
     Returns the long range Heisenberg model Hamiltonian.
